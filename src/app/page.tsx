@@ -131,7 +131,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-stone-50 flex flex-col font-sans">
+    <div className="min-h-screen bg-stone-50 flex flex-col font-sans pb-24 sm:pb-0">
       {/* Header */}
       <header className="bg-white/85 backdrop-blur-md sticky top-0 z-40 border-b border-stone-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
@@ -217,7 +217,7 @@ export default function Home() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex-1">
         {/* Category Filter */}
-        <div className="flex flex-wrap items-center justify-between gap-6 mb-12 border-b border-stone-200 pb-6">
+        <div className="hidden sm:flex flex-wrap items-center justify-between gap-6 mb-12 border-b border-stone-200 pb-6">
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setSelectedCategory("all")}
@@ -546,6 +546,38 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Mobile Bottom Navigation */}
+      <div className="sm:hidden fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-stone-200 py-3 px-4 flex justify-around items-center shadow-lg safe-bottom">
+        <button
+          onClick={() => setSelectedCategory("all")}
+          className={`flex flex-col items-center gap-1.5 transition-all duration-200 ${
+            selectedCategory === "all" ? "text-emerald-700 font-bold scale-105" : "text-stone-500 font-medium"
+          }`}
+        >
+          <span className="text-xl">🌱</span>
+          <span className="text-[10px]">সব পণ্য</span>
+        </button>
+        {categories.map((cat) => {
+          let icon = "🌿";
+          if (cat.slug === "indoor") icon = "🏠";
+          if (cat.slug === "outdoor") icon = "🌳";
+          if (cat.slug === "tools") icon = "🛠️";
+          
+          return (
+            <button
+              key={cat.id}
+              onClick={() => setSelectedCategory(cat.id)}
+              className={`flex flex-col items-center gap-1.5 transition-all duration-200 ${
+                selectedCategory === cat.id ? "text-emerald-700 font-bold scale-105" : "text-stone-500 font-medium"
+              }`}
+            >
+              <span className="text-xl">{icon}</span>
+              <span className="text-[10px]">{cat.name.split(" ")[0]}</span>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
