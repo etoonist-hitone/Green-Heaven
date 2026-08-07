@@ -29,8 +29,12 @@ export default function RootLayout({
     <html
       lang="bn"
       className={`${hindSiliguri.variable} ${outfit.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-stone-50 text-stone-900 font-sans">
+      <body
+        className="min-h-full flex flex-col bg-stone-50 text-stone-900 font-sans"
+        suppressHydrationWarning
+      >
         {children}
       </body>
     </html>
