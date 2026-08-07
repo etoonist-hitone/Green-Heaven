@@ -221,6 +221,7 @@ export default function Home() {
               </h2>
               <p className="text-lg text-stone-700 max-w-xl leading-relaxed">
                 ইনডোর প্ল্যান্ট, আউটডোর প্ল্যান্ট এবং প্রিমিয়াম গার্ডেনিং এক্সেসরিজ নিয়ে গ্রিন হেভেন সর্বদা প্রস্তুত। আমাদের প্রতিটি গাছ সতেজ এবং সুস্থভাবে আপনার ঠিকানায় পৌঁছে দেওয়া হয়।
+              </p>
             </div>
 
             <div className="lg:col-span-5 relative">
