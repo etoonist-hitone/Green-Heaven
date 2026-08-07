@@ -154,27 +154,56 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-stone-50 flex flex-col font-sans pb-24 sm:pb-0">
       {/* Header */}
-      <header className="bg-white/85 backdrop-blur-md sticky top-0 z-40 border-b border-stone-200/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-emerald-700 flex items-center justify-center text-white font-bold text-xl shadow-md">
-              🌿
+      <header className="bg-white/95 backdrop-blur-md sticky top-0 z-40 border-b border-stone-200/80 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center justify-between w-full sm:w-auto">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-emerald-700 flex items-center justify-center text-white font-bold text-xl shadow-md">
+                🌿
+              </div>
+              <div>
+                <h1 className="text-xl sm:text-2xl font-bold text-stone-800 tracking-tight leading-none">গ্রিন হেভেন</h1>
+                <span className="text-[10px] sm:text-xs text-stone-500 font-medium tracking-wide uppercase">Premium Online Nursery</span>
+              </div>
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-stone-800 tracking-tight leading-none">গ্রিন হেভেন</h1>
-              <span className="text-xs text-stone-500 font-medium tracking-wide uppercase">Premium Online Nursery</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
+            
+            {/* WhatsApp link on mobile right side */}
             <a
               href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "8801700000000"}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-5 py-2.5 rounded-full transition-all duration-300 shadow-md shadow-emerald-500/10 text-sm"
+              className="sm:hidden w-10 h-10 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full flex items-center justify-center text-xl shadow-md"
+              title="WhatsApp"
             >
-              💬 WhatsApp যোগাযোগ
+              💬
             </a>
           </div>
+
+          {/* Search bar centered/right */}
+          <div className="w-full sm:max-w-md">
+            <div className="relative rounded-full bg-stone-100 p-0.5 flex border border-stone-200 focus-within:border-emerald-500 focus-within:bg-white transition-all duration-200">
+              <input
+                type="text"
+                placeholder="আপনার পছন্দের গাছ খুঁজুন..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-5 pr-3 py-2 rounded-full text-stone-850 placeholder-stone-400 focus:outline-none text-sm bg-transparent"
+              />
+              <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-1.5 rounded-full font-semibold transition-colors duration-200 text-xs shrink-0">
+                খুঁজুন
+              </button>
+            </div>
+          </div>
+
+          {/* WhatsApp on Desktop */}
+          <a
+            href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "8801700000000"}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden sm:flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-5 py-2.5 rounded-full transition-all duration-300 shadow-md shadow-emerald-500/10 text-sm shrink-0"
+          >
+            💬 WhatsApp যোগাযোগ
+          </a>
         </div>
       </header>
 
@@ -192,23 +221,6 @@ export default function Home() {
               </h2>
               <p className="text-lg text-stone-700 max-w-xl leading-relaxed">
                 ইনডোর প্ল্যান্ট, আউটডোর প্ল্যান্ট এবং প্রিমিয়াম গার্ডেনিং এক্সেসরিজ নিয়ে গ্রিন হেভেন সর্বদা প্রস্তুত। আমাদের প্রতিটি গাছ সতেজ এবং সুস্থভাবে আপনার ঠিকানায় পৌঁছে দেওয়া হয়।
-              </p>
-              
-              {/* Search bar */}
-              <div className="max-w-md pt-2">
-                <div className="relative rounded-full shadow-lg bg-white p-1 flex border border-stone-200">
-                  <input
-                    type="text"
-                    placeholder="আপনার পছন্দের গাছ বা টুলস খুঁজুন..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-6 pr-4 py-3 rounded-full text-stone-800 placeholder-stone-400 focus:outline-none text-base"
-                  />
-                  <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 rounded-full font-semibold transition-colors duration-200">
-                    খুঁজুন
-                  </button>
-                </div>
-              </div>
             </div>
 
             <div className="lg:col-span-5 relative">
