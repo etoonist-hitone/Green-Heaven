@@ -30,6 +30,27 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  // Splash screen states
+  const [showSplash, setShowSplash] = useState(true);
+  const [animateOut, setAnimateOut] = useState(false);
+
+  useEffect(() => {
+    // Start exit animation after 1800ms
+    const animTimer = setTimeout(() => {
+      setAnimateOut(true);
+    }, 1800);
+
+    // Completely unmount after animation completes (e.g. 2500ms)
+    const removeTimer = setTimeout(() => {
+      setShowSplash(false);
+    }, 2500);
+
+    return () => {
+      clearTimeout(animTimer);
+      clearTimeout(removeTimer);
+    };
+  }, []);
   
   // Inquiry form state
   const [showInquiryForm, setShowInquiryForm] = useState(false);
@@ -578,6 +599,36 @@ export default function Home() {
           );
         })}
       </div>
+
+      {/* Splash Screen for Mobile */}
+      {showSplash && (
+        <div
+          className={`sm:hidden fixed inset-0 z-50 bg-stone-950 flex flex-col items-center justify-center text-white px-6 transition-transform duration-700 ease-in-out ${
+            animateOut ? "-translate-y-full" : "translate-y-0"
+          }`}
+        >
+          <div className="absolute inset-0 opacity-40">
+            <Image
+              src="https://images.unsplash.com/photo-1463936575829-25148e1db1b8?w=800&auto=format&fit=crop&q=80"
+              alt="Welcome background"
+              fill
+              className="object-cover animate-pulse duration-[3000ms]"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-900/90 to-transparent"></div>
+          </div>
+          
+          <div className="relative z-10 text-center space-y-6">
+            <div className="w-24 h-24 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-5xl mx-auto shadow-2xl border border-white/20 animate-bounce">
+              🌿
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-3xl font-extrabold tracking-tight text-emerald-400">গ্রিন হেভেন</h2>
+              <p className="text-stone-300 font-medium text-base">আপনাকে স্বাগতম</p>
+            </div>
+            <div className="w-12 h-1 bg-emerald-500 rounded-full mx-auto"></div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
