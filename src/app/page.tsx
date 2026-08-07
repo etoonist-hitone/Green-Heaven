@@ -151,6 +151,82 @@ export default function Home() {
     }
   };
 
+  const renderProductCard = (product: Product) => (
+    <div
+      key={product.id}
+      className="bg-white rounded-2xl sm:rounded-3xl overflow-hidden border border-stone-200/80 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group"
+    >
+      {/* Product Image */}
+      <div className="relative aspect-square w-full bg-stone-100 overflow-hidden cursor-pointer" onClick={() => setSelectedProduct(product)}>
+        <Image
+          src={product.images[0] || "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&auto=format&fit=crop&q=80"}
+          alt={product.name_bn}
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-500"
+        />
+        {product.stock_status === "sold_out" && (
+          <div className="absolute top-2 right-2 sm:top-4 sm:right-4 bg-stone-900/90 text-white text-[9px] sm:text-xs font-bold px-2 sm:px-3 py-0.5 sm:py-1 rounded-full uppercase tracking-wider">
+            স্টক শেষ
+          </div>
+        )}
+      </div>
+
+      {/* Product Body */}
+      <div className="p-3 sm:p-6 flex-1 flex flex-col justify-between">
+        <div>
+          <div className="flex items-center justify-between mb-1 sm:mb-2">
+            <span className="text-[10px] sm:text-xs font-semibold text-emerald-700 tracking-wider uppercase">
+              {categories.find((c) => c.id === product.category_id)?.name.split(" ")[0] || "গাছ"}
+            </span>
+            {product.name_en && (
+              <span className="text-[9px] sm:text-xs font-mono text-stone-400 truncate max-w-[55%] hidden xs:inline">{product.name_en}</span>
+            )}
+          </div>
+          <h3
+            className="text-sm sm:text-lg font-bold text-stone-900 mb-1 sm:mb-2 cursor-pointer hover:text-emerald-700 transition-colors truncate"
+            onClick={() => setSelectedProduct(product)}
+          >
+            {product.name_bn}
+          </h3>
+          <p className="text-stone-600 text-sm line-clamp-2 mb-4 leading-relaxed hidden sm:block">
+            {product.description}
+          </p>
+        </div>
+
+        <div>
+          <div className="flex flex-col xs:flex-row xs:items-center justify-between pt-2 sm:pt-4 border-t border-stone-100 gap-2">
+            <div className="text-sm sm:text-xl font-extrabold text-stone-900">
+              ৳ {product.price.toLocaleString("bn-BD")}
+            </div>
+            
+            <div className="flex gap-1 w-full xs:w-auto">
+              <button
+                onClick={() => setSelectedProduct(product)}
+                className="flex-1 xs:flex-none px-2 sm:px-4 py-1.5 sm:py-2 border border-stone-200 hover:bg-stone-50 text-stone-700 text-[10px] sm:text-xs font-bold rounded-lg sm:rounded-xl transition-colors duration-200 text-center"
+              >
+                বিস্তারিত
+              </button>
+              <button
+                disabled={product.stock_status === "sold_out"}
+                onClick={() => {
+                  setInquiryProduct(product);
+                  setShowInquiryForm(true);
+                }}
+                className={`flex-1 xs:flex-none px-2 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-bold rounded-lg sm:rounded-xl transition-all duration-200 text-center ${
+                  product.stock_status === "sold_out"
+                    ? "bg-stone-100 text-stone-400 cursor-not-allowed"
+                    : "bg-emerald-600 hover:bg-emerald-700 text-white shadow-md"
+                }`}
+              >
+                অর্ডার
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-stone-50 flex flex-col font-sans pb-24 sm:pb-0">
       {/* Header */}
@@ -298,84 +374,34 @@ export default function Home() {
             <h3 className="text-xl font-bold text-stone-800">কোনো পণ্য পাওয়া যায়নি!</h3>
             <p className="text-stone-500 mt-2">অন্য কোনো নামে সার্চ করুন অথবা ফিল্টার পরিবর্তন করুন।</p>
           </div>
+        ) : selectedCategory !== "all" ? (
+          /* Single Selected Category */
+          <div className="space-y-6">
+            <h3 className="text-xl sm:text-2xl font-bold text-stone-900 border-l-4 border-emerald-700 pl-3 mb-6">
+              {categories.find((c) => c.id === selectedCategory)?.name || "পণ্যসমূহ"}
+            </h3>
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-8">
+              {filteredProducts.map((product) => renderProductCard(product))}
+            </div>
+          </div>
         ) : (
-          /* Products Grid */
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-8">
-            {filteredProducts.map((product) => (
-              <div
-                key={product.id}
-                className="bg-white rounded-2xl sm:rounded-3xl overflow-hidden border border-stone-200/80 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group"
-              >
-                {/* Product Image */}
-                <div className="relative aspect-square w-full bg-stone-100 overflow-hidden cursor-pointer" onClick={() => setSelectedProduct(product)}>
-                  <Image
-                    src={product.images[0] || "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&auto=format&fit=crop&q=80"}
-                    alt={product.name_bn}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  {product.stock_status === "sold_out" && (
-                    <div className="absolute top-2 right-2 sm:top-4 sm:right-4 bg-stone-900/90 text-white text-[9px] sm:text-xs font-bold px-2 sm:px-3 py-0.5 sm:py-1 rounded-full uppercase tracking-wider">
-                      স্টক শেষ
-                    </div>
-                  )}
-                </div>
-
-                {/* Product Body */}
-                <div className="p-3 sm:p-6 flex-1 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between mb-1 sm:mb-2">
-                      <span className="text-[10px] sm:text-xs font-semibold text-emerald-700 tracking-wider uppercase">
-                        {categories.find((c) => c.id === product.category_id)?.name.split(" ")[0] || "গাছ"}
-                      </span>
-                      {product.name_en && (
-                        <span className="text-[9px] sm:text-xs font-mono text-stone-400 truncate max-w-[55%] hidden xs:inline">{product.name_en}</span>
-                      )}
-                    </div>
-                    <h3
-                      className="text-sm sm:text-lg font-bold text-stone-900 mb-1 sm:mb-2 cursor-pointer hover:text-emerald-700 transition-colors truncate"
-                      onClick={() => setSelectedProduct(product)}
-                    >
-                      {product.name_bn}
-                    </h3>
-                    <p className="text-stone-600 text-sm line-clamp-2 mb-4 leading-relaxed hidden sm:block">
-                      {product.description}
-                    </p>
-                  </div>
-
-                  <div>
-                    <div className="flex flex-col xs:flex-row xs:items-center justify-between pt-2 sm:pt-4 border-t border-stone-100 gap-2">
-                      <div className="text-sm sm:text-xl font-extrabold text-stone-900">
-                        ৳ {product.price.toLocaleString("bn-BD")}
-                      </div>
-                      
-                      <div className="flex gap-1 w-full xs:w-auto">
-                        <button
-                          onClick={() => setSelectedProduct(product)}
-                          className="flex-1 xs:flex-none px-2 sm:px-4 py-1.5 sm:py-2 border border-stone-200 hover:bg-stone-50 text-stone-700 text-[10px] sm:text-xs font-bold rounded-lg sm:rounded-xl transition-colors duration-200 text-center"
-                        >
-                          বিস্তারিত
-                        </button>
-                        <button
-                          disabled={product.stock_status === "sold_out"}
-                          onClick={() => {
-                            setInquiryProduct(product);
-                            setShowInquiryForm(true);
-                          }}
-                          className={`flex-1 xs:flex-none px-2 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-bold rounded-lg sm:rounded-xl transition-all duration-200 text-center ${
-                            product.stock_status === "sold_out"
-                              ? "bg-stone-100 text-stone-400 cursor-not-allowed"
-                              : "bg-emerald-600 hover:bg-emerald-700 text-white shadow-md"
-                          }`}
-                        >
-                          অর্ডার
-                        </button>
-                      </div>
-                    </div>
+          /* All Categories - Grouped by Category */
+          <div className="space-y-16">
+            {categories.map((cat) => {
+              const catProducts = filteredProducts.filter((p) => p.category_id === cat.id);
+              if (catProducts.length === 0) return null;
+              
+              return (
+                <div key={cat.id} className="space-y-6">
+                  <h3 className="text-xl sm:text-2xl font-bold text-stone-900 border-l-4 border-emerald-700 pl-3">
+                    {cat.name}
+                  </h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-8">
+                    {catProducts.map((product) => renderProductCard(product))}
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </main>
