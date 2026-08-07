@@ -169,7 +169,7 @@ export default function Home() {
             
             {/* WhatsApp link on mobile right side */}
             <a
-              href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "8801700000000"}`}
+              href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "8801896270282"}`}
               target="_blank"
               rel="noopener noreferrer"
               className="sm:hidden w-10 h-10 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full flex items-center justify-center text-xl shadow-md"
@@ -197,7 +197,7 @@ export default function Home() {
 
           {/* WhatsApp on Desktop */}
           <a
-            href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "8801700000000"}`}
+            href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "8801896270282"}`}
             target="_blank"
             rel="noopener noreferrer"
             className="hidden sm:flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-5 py-2.5 rounded-full transition-all duration-300 shadow-md shadow-emerald-500/10 text-sm shrink-0"
@@ -558,7 +558,7 @@ export default function Home() {
           <div>
             <h4 className="text-lg font-bold text-white mb-4">যোগাযোগ</h4>
             <ul className="space-y-2 text-sm text-stone-400">
-              <li>📞 ফোন: {process.env.NEXT_PUBLIC_CONTACT_PHONE || "017XXXXXXXX"}</li>
+              <li>📞 ফোন: {process.env.NEXT_PUBLIC_CONTACT_PHONE || "01896270282"}</li>
               <li>✉️ ইমেইল: {process.env.NEXT_PUBLIC_CONTACT_EMAIL || "info@greenheaven.com"}</li>
             </ul>
           </div>
