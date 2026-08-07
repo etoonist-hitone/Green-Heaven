@@ -529,6 +529,16 @@ export default function Home() {
             </ul>
           </div>
           <div>
+            <h4 className="text-lg font-bold text-white mb-4">অ্যাডমিন</h4>
+            <ul className="space-y-2 text-sm text-stone-400">
+              <li>
+                <a href="/admin" className="hover:text-emerald-400 transition-colors">
+                  🔐 অ্যাডমিন লগইন
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div>
             <h4 className="text-lg font-bold text-white mb-4">কপিরাইট</h4>
             <p className="text-stone-400 text-sm">
               &copy; {new Date().getFullYear()} গ্রিন হেভেন। সর্বস্বত্ব সংরক্ষিত।
