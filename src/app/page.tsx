@@ -266,11 +266,11 @@ export default function Home() {
           </div>
         ) : (
           /* Products Grid */
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-8">
             {filteredProducts.map((product) => (
               <div
                 key={product.id}
-                className="bg-white rounded-3xl overflow-hidden border border-stone-200/80 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group"
+                className="bg-white rounded-2xl sm:rounded-3xl overflow-hidden border border-stone-200/80 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group"
               >
                 {/* Product Image */}
                 <div className="relative aspect-square w-full bg-stone-100 overflow-hidden cursor-pointer" onClick={() => setSelectedProduct(product)}>
@@ -281,44 +281,44 @@ export default function Home() {
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   {product.stock_status === "sold_out" && (
-                    <div className="absolute top-4 right-4 bg-stone-900/90 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                    <div className="absolute top-2 right-2 sm:top-4 sm:right-4 bg-stone-900/90 text-white text-[9px] sm:text-xs font-bold px-2 sm:px-3 py-0.5 sm:py-1 rounded-full uppercase tracking-wider">
                       স্টক শেষ
                     </div>
                   )}
                 </div>
 
                 {/* Product Body */}
-                <div className="p-6 flex-1 flex flex-col justify-between">
+                <div className="p-3 sm:p-6 flex-1 flex flex-col justify-between">
                   <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-semibold text-emerald-700 tracking-wider uppercase">
-                        {categories.find((c) => c.id === product.category_id)?.name || "গাছপালা"}
+                    <div className="flex items-center justify-between mb-1 sm:mb-2">
+                      <span className="text-[10px] sm:text-xs font-semibold text-emerald-700 tracking-wider uppercase">
+                        {categories.find((c) => c.id === product.category_id)?.name.split(" ")[0] || "গাছ"}
                       </span>
                       {product.name_en && (
-                        <span className="text-xs font-mono text-stone-400">{product.name_en}</span>
+                        <span className="text-[9px] sm:text-xs font-mono text-stone-400 truncate max-w-[55%] hidden xs:inline">{product.name_en}</span>
                       )}
                     </div>
                     <h3
-                      className="text-lg font-bold text-stone-900 mb-2 cursor-pointer hover:text-emerald-700 transition-colors"
+                      className="text-sm sm:text-lg font-bold text-stone-900 mb-1 sm:mb-2 cursor-pointer hover:text-emerald-700 transition-colors truncate"
                       onClick={() => setSelectedProduct(product)}
                     >
                       {product.name_bn}
                     </h3>
-                    <p className="text-stone-600 text-sm line-clamp-2 mb-4 leading-relaxed">
+                    <p className="text-stone-600 text-sm line-clamp-2 mb-4 leading-relaxed hidden sm:block">
                       {product.description}
                     </p>
                   </div>
 
                   <div>
-                    <div className="flex items-center justify-between pt-4 border-t border-stone-100">
-                      <div className="text-xl font-extrabold text-stone-900">
+                    <div className="flex flex-col xs:flex-row xs:items-center justify-between pt-2 sm:pt-4 border-t border-stone-100 gap-2">
+                      <div className="text-sm sm:text-xl font-extrabold text-stone-900">
                         ৳ {product.price.toLocaleString("bn-BD")}
                       </div>
                       
-                      <div className="flex gap-2">
+                      <div className="flex gap-1 w-full xs:w-auto">
                         <button
                           onClick={() => setSelectedProduct(product)}
-                          className="px-4 py-2 border border-stone-200 hover:bg-stone-50 text-stone-700 text-xs font-bold rounded-xl transition-colors duration-200"
+                          className="flex-1 xs:flex-none px-2 sm:px-4 py-1.5 sm:py-2 border border-stone-200 hover:bg-stone-50 text-stone-700 text-[10px] sm:text-xs font-bold rounded-lg sm:rounded-xl transition-colors duration-200 text-center"
                         >
                           বিস্তারিত
                         </button>
@@ -328,13 +328,13 @@ export default function Home() {
                             setInquiryProduct(product);
                             setShowInquiryForm(true);
                           }}
-                          className={`px-4 py-2 text-xs font-bold rounded-xl transition-all duration-200 ${
+                          className={`flex-1 xs:flex-none px-2 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-bold rounded-lg sm:rounded-xl transition-all duration-200 text-center ${
                             product.stock_status === "sold_out"
                               ? "bg-stone-100 text-stone-400 cursor-not-allowed"
                               : "bg-emerald-600 hover:bg-emerald-700 text-white shadow-md"
                           }`}
                         >
-                          অর্ডার করুন
+                          অর্ডার
                         </button>
                       </div>
                     </div>
