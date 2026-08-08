@@ -704,10 +704,10 @@ export default function Home() {
         })}
       </div>
 
-      {/* Splash Screen for Mobile */}
+      {/* Splash Screen Intro */}
       {showSplash && (
         <div
-          className={`sm:hidden fixed inset-0 z-50 bg-stone-950 flex flex-col items-center justify-center text-white px-6 transition-transform duration-700 ease-in-out ${
+          className={`fixed inset-0 z-50 bg-stone-950 flex flex-col items-center justify-center text-white px-6 transition-transform duration-700 ease-in-out ${
             animateOut ? "-translate-y-full" : "translate-y-0"
           }`}
         >
@@ -722,8 +722,13 @@ export default function Home() {
           </div>
           
           <div className="relative z-10 text-center space-y-6">
-            <div className="w-24 h-24 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-5xl mx-auto shadow-2xl border border-white/20 animate-bounce">
-              🌿
+            <div className="relative w-24 h-24 rounded-full overflow-hidden flex items-center justify-center mx-auto shadow-2xl border border-white/20 animate-bounce bg-white">
+              <Image
+                src="/logo.png"
+                alt="গ্রিন হেভেন লোগো"
+                fill
+                className="object-cover p-2.5"
+              />
             </div>
             <div className="space-y-2">
               <h2 className="text-3xl font-extrabold tracking-tight text-emerald-400">গ্রিন হেভেন</h2>
