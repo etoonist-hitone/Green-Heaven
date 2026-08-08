@@ -438,12 +438,12 @@ export default function Home() {
             </div>
             
             <div className="p-6 overflow-y-auto space-y-6 flex-1">
-              <div className="relative aspect-video rounded-2xl overflow-hidden bg-stone-100">
+              <div className="relative h-[300px] sm:h-[400px] rounded-2xl overflow-hidden bg-stone-100/50">
                 <Image
                   src={selectedProduct.images[0]}
                   alt={selectedProduct.name_bn}
                   fill
-                  className="object-cover"
+                  className="object-contain"
                 />
               </div>
 
