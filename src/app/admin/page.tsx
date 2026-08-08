@@ -218,7 +218,7 @@ export default function AdminPage() {
       }
     } catch (err: any) {
       console.error("Error uploading image:", err);
-      alert("ইমেজ আপলোড করতে সমস্যা হয়েছে! দয়া করে নিশ্চিত করুন আপনার Supabase-এ 'products' নামে একটি public storage bucket তৈরি করা আছে এবং সেটির RLS Policy ঠিকভাবে কনফিগার করা আছে।");
+      alert(`ইমেজ আপলোড করতে সমস্যা হয়েছে! \n\nভুলের বিবরণ (Error Detail): ${err.message || JSON.stringify(err)} \n\nদয়া করে নিশ্চিত করুন আপনার Supabase-এ 'products' নামে একটি public storage bucket তৈরি করা আছে এবং সেটির RLS Policy ঠিকভাবে কনফিগার করা আছে।`);
     } finally {
       setUploadingImage(false);
     }
