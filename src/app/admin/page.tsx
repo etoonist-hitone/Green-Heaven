@@ -143,6 +143,52 @@ export default function AdminPage() {
     setUser(null);
   };
 
+  // Image compressor helper (scales down if > 1000px, 75% quality JPEG)
+  const compressImage = (file: File, maxWidth = 1000, quality = 0.75): Promise<Blob> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new window.Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext("2d");
+          if (!ctx) {
+            resolve(file);
+            return;
+          }
+
+          ctx.drawImage(img, 0, 0, width, height);
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                resolve(blob);
+              } else {
+                resolve(file);
+              }
+            },
+            "image/jpeg",
+            quality
+          );
+        };
+        img.onerror = () => resolve(file);
+      };
+      reader.onerror = (err) => reject(err);
+    });
+  };
+
   // Image Upload handler
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -150,14 +196,18 @@ export default function AdminPage() {
 
     try {
       setUploadingImage(true);
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
+      
+      // Auto compress image
+      const compressedBlob = await compressImage(file);
+      const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.jpg`;
       const filePath = `product-images/${fileName}`;
 
-      // Upload to bucket 'products'
+      // Upload compressed blob to bucket 'products'
       const { error: uploadError } = await supabase.storage
         .from("products")
-        .upload(filePath, file);
+        .upload(filePath, compressedBlob, {
+          contentType: "image/jpeg",
+        });
 
       if (uploadError) throw uploadError;
 
@@ -168,7 +218,7 @@ export default function AdminPage() {
       }
     } catch (err: any) {
       console.error("Error uploading image:", err);
-      alert("ইমেজ আপলোড করতে সমস্যা হয়েছে! দয়া করে নিশ্চিত করুন আপনার Supabase-এ 'products' নামে একটি public storage bucket তৈরি করা আছে।");
+      alert("ইমেজ আপলোড করতে সমস্যা হয়েছে! দয়া করে নিশ্চিত করুন আপনার Supabase-এ 'products' নামে একটি public storage bucket তৈরি করা আছে এবং সেটির RLS Policy ঠিকভাবে কনফিগার করা আছে।");
     } finally {
       setUploadingImage(false);
     }
@@ -464,7 +514,8 @@ export default function AdminPage() {
                     </button>
                   </div>
 
-                  <div className="overflow-x-auto">
+                  {/* Desktop Table View */}
+                  <div className="hidden md:block overflow-x-auto">
                     <table className="min-w-full divide-y divide-stone-200 text-sm">
                       <thead>
                         <tr className="bg-stone-50 text-left text-xs font-bold text-stone-500 uppercase tracking-wider">
@@ -524,6 +575,52 @@ export default function AdminPage() {
                       </tbody>
                     </table>
                   </div>
+
+                  {/* Mobile Card List View */}
+                  <div className="md:hidden space-y-4">
+                    {products.map((prod) => (
+                      <div key={prod.id} className="bg-stone-50 border border-stone-200 p-4 rounded-2xl flex gap-4 items-center">
+                        <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-stone-100 border border-stone-250 shrink-0">
+                          <Image
+                            src={prod.images[0] || "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=100&auto=format&fit=crop&q=80"}
+                            alt={prod.name_bn}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex justify-between items-start gap-2">
+                            <h3 className="font-bold text-stone-900 truncate">{prod.name_bn}</h3>
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0 ${
+                              prod.stock_status === "available"
+                                ? "bg-emerald-50 text-emerald-700 border border-emerald-100"
+                                : "bg-red-50 text-red-700 border border-red-100"
+                            }`}>
+                              {prod.stock_status === "available" ? "স্টক আছে" : "শেষ"}
+                            </span>
+                          </div>
+                          <p className="text-xs text-stone-400 font-mono truncate">{prod.name_en || "-"}</p>
+                          <div className="flex justify-between items-center mt-2">
+                            <span className="text-sm font-extrabold text-stone-850">৳ {prod.price}</span>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => startEditProduct(prod)}
+                                className="text-emerald-700 hover:text-emerald-950 font-bold text-xs px-2.5 py-1 bg-white border border-stone-200 rounded-lg"
+                              >
+                                এডিট
+                              </button>
+                              <button
+                                onClick={() => handleDeleteProduct(prod.id)}
+                                className="text-red-650 hover:text-red-800 font-bold text-xs px-2.5 py-1 bg-white border border-stone-200 rounded-lg"
+                              >
+                                ডিলিট
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 
@@ -534,7 +631,8 @@ export default function AdminPage() {
                     <h2 className="text-xl font-bold text-stone-900">গ্রাহকদের অর্ডার ও ইনকোয়ারি সমূহ</h2>
                   </div>
 
-                  <div className="overflow-x-auto">
+                  {/* Desktop view */}
+                  <div className="hidden md:block overflow-x-auto">
                     <table className="min-w-full divide-y divide-stone-200 text-sm">
                       <thead>
                         <tr className="bg-stone-50 text-left text-xs font-bold text-stone-500 uppercase tracking-wider">
@@ -580,6 +678,45 @@ export default function AdminPage() {
                         ))}
                       </tbody>
                     </table>
+                  </div>
+
+                  {/* Mobile view */}
+                  <div className="md:hidden space-y-4">
+                    {inquiries.map((inq) => (
+                      <div key={inq.id} className="bg-stone-50 border border-stone-200 p-4 rounded-2xl space-y-2">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h3 className="font-bold text-stone-900 text-sm">{inq.name}</h3>
+                            <a href={`tel:${inq.phone}`} className="text-emerald-700 hover:underline font-bold text-xs">
+                              📞 {inq.phone}
+                            </a>
+                          </div>
+                          <span className="text-[10px] text-stone-400">
+                            {new Date(inq.created_at).toLocaleDateString("bn-BD")}
+                          </span>
+                        </div>
+                        {inq.product && (
+                          <div className="bg-white border border-stone-200 p-2 rounded-xl text-xs">
+                            <span className="text-stone-400 block text-[9px] uppercase font-bold">অর্ডার করা পণ্য</span>
+                            <span className="font-bold text-stone-850">{inq.product.name_bn}</span>
+                          </div>
+                        )}
+                        {inq.message && (
+                          <div className="text-xs text-stone-600 bg-stone-100/50 p-2 rounded-xl">
+                            <span className="text-stone-400 block text-[9px] uppercase font-bold">বার্তা / ঠিকানা</span>
+                            <p className="whitespace-pre-line">{inq.message}</p>
+                          </div>
+                        )}
+                        <div className="flex justify-end pt-2 border-t border-stone-150">
+                          <button
+                            onClick={() => handleDeleteInquiry(inq.id)}
+                            className="text-red-650 hover:text-red-800 font-bold text-xs px-3 py-1.5 bg-white border border-stone-200 rounded-lg"
+                          >
+                            ডিলিট করুন
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
