@@ -62,6 +62,15 @@ export default function Home() {
   const [submittingInquiry, setSubmittingInquiry] = useState(false);
   const [inquirySuccess, setInquirySuccess] = useState(false);
 
+  const getWhatsAppNumber = () => {
+    const rawNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "8801896270282";
+    const cleanNumber = rawNumber.replace(/\D/g, "");
+    if (cleanNumber.length < 10) {
+      return "8801896270282";
+    }
+    return cleanNumber;
+  };
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -245,7 +254,7 @@ export default function Home() {
             
             {/* WhatsApp link on mobile right side */}
             <a
-              href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "8801896270282"}`}
+              href={`https://wa.me/${getWhatsAppNumber()}`}
               target="_blank"
               rel="noopener noreferrer"
               className="sm:hidden w-10 h-10 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full flex items-center justify-center text-xl shadow-md"
@@ -273,7 +282,7 @@ export default function Home() {
 
           {/* WhatsApp on Desktop */}
           <a
-            href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "8801896270282"}`}
+            href={`https://wa.me/${getWhatsAppNumber()}`}
             target="_blank"
             rel="noopener noreferrer"
             className="hidden sm:flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-5 py-2.5 rounded-full transition-all duration-300 shadow-md shadow-emerald-500/10 text-sm shrink-0"
