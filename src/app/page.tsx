@@ -261,8 +261,13 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center justify-between w-full sm:w-auto">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-emerald-700 flex items-center justify-center text-white font-bold text-xl shadow-md">
-                🌿
+              <div className="relative w-10 h-10 rounded-full overflow-hidden shadow-md border border-stone-100 bg-stone-50 shrink-0">
+                <Image
+                  src="/logo.png"
+                  alt="গ্রিন হেভেন লোগো"
+                  fill
+                  className="object-cover"
+                />
               </div>
               <div>
                 <h1 className="text-xl sm:text-2xl font-bold text-stone-800 tracking-tight leading-none">গ্রিন হেভেন</h1>
