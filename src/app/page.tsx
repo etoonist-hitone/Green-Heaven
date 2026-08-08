@@ -79,6 +79,16 @@ export default function Home() {
     return `https://wa.me/${getWhatsAppNumber()}?text=${encodeURIComponent(message)}`;
   };
 
+  const handleCategoryChange = (categoryId: string) => {
+    setSelectedCategory(categoryId);
+    setTimeout(() => {
+      const section = document.getElementById("products-section");
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 100);
+  };
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -347,12 +357,12 @@ export default function Home() {
       </section>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex-1">
+      <main id="products-section" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex-1 scroll-mt-20">
         {/* Category Filter */}
         <div className="hidden sm:flex flex-wrap items-center justify-between gap-6 mb-12 border-b border-stone-200 pb-6">
           <div className="flex flex-wrap gap-2">
             <button
-              onClick={() => setSelectedCategory("all")}
+              onClick={() => handleCategoryChange("all")}
               className={`px-6 py-2.5 rounded-full font-semibold text-sm transition-all duration-300 ${
                 selectedCategory === "all"
                   ? "bg-emerald-700 text-white shadow-md"
@@ -366,7 +376,7 @@ export default function Home() {
               return (
                 <button
                   key={cat.id}
-                  onClick={() => setSelectedCategory(cat.id)}
+                  onClick={() => handleCategoryChange(cat.id)}
                   className={`px-6 py-2.5 rounded-full font-semibold text-sm transition-all duration-300 ${
                     selectedCategory === cat.id
                       ? "bg-emerald-700 text-white shadow-md"
@@ -660,7 +670,7 @@ export default function Home() {
       {/* Mobile Bottom Navigation */}
       <div className="sm:hidden fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-stone-200 py-3 px-4 flex justify-around items-center shadow-lg safe-bottom">
         <button
-          onClick={() => setSelectedCategory("all")}
+          onClick={() => handleCategoryChange("all")}
           className={`flex flex-col items-center gap-1.5 transition-all duration-200 ${
             selectedCategory === "all" ? "text-emerald-700 font-bold scale-105" : "text-stone-500 font-medium"
           }`}
@@ -677,7 +687,7 @@ export default function Home() {
           return (
             <button
               key={cat.id}
-              onClick={() => setSelectedCategory(cat.id)}
+              onClick={() => handleCategoryChange(cat.id)}
               className={`flex flex-col items-center gap-1.5 transition-all duration-200 ${
                 selectedCategory === cat.id ? "text-emerald-700 font-bold scale-105" : "text-stone-500 font-medium"
               }`}
