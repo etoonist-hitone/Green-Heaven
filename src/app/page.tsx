@@ -64,7 +64,10 @@ export default function Home() {
 
   const getWhatsAppNumber = () => {
     const rawNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "8801896270282";
-    const cleanNumber = rawNumber.replace(/\D/g, "");
+    let cleanNumber = rawNumber.replace(/\D/g, "");
+    if (cleanNumber.startsWith("0") && cleanNumber.length === 11) {
+      cleanNumber = "88" + cleanNumber;
+    }
     if (cleanNumber.length < 10) {
       return "8801896270282";
     }
