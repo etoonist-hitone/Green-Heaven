@@ -722,12 +722,12 @@ export default function Home() {
           </div>
           
           <div className="relative z-10 text-center space-y-6">
-            <div className="relative w-24 h-24 rounded-full overflow-hidden flex items-center justify-center mx-auto shadow-2xl border border-white/20 animate-bounce bg-white">
+            <div className="relative w-24 h-24 rounded-full overflow-hidden flex items-center justify-center mx-auto shadow-[0_0_35px_rgba(16,185,129,0.25)] border border-white/25 animate-bounce bg-white/10 backdrop-blur-md">
               <Image
                 src="/logo.png"
                 alt="গ্রিন হেভেন লোগো"
                 fill
-                className="object-cover p-2.5"
+                className="object-cover p-3.5"
               />
             </div>
             <div className="space-y-2">
