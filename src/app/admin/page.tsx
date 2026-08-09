@@ -72,6 +72,11 @@ export default function AdminPage() {
   const [newCatSlug, setNewCatSlug] = useState("");
   const [submittingCategory, setSubmittingCategory] = useState(false);
 
+  // Banner manager states
+  const [heroBanners, setHeroBanners] = useState<string[]>([]);
+  const [savingBanners, setSavingBanners] = useState(false);
+  const [uploadingBannerIdx, setUploadingBannerIdx] = useState<number | null>(null);
+
   useEffect(() => {
     async function checkUser() {
       try {
@@ -110,6 +115,22 @@ export default function AdminPage() {
       }));
 
       setInquiries(mappedInquiries);
+
+      // Fetch Banners from Settings
+      const { data: settingsData } = await supabase
+        .from("settings")
+        .select("*")
+        .eq("key", "hero_banners")
+        .single();
+      if (settingsData?.value && Array.isArray(settingsData.value)) {
+        setHeroBanners(settingsData.value);
+      } else {
+        setHeroBanners([
+          "https://images.unsplash.com/photo-1463936575829-25148e1db1b8?w=800&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=800&auto=format&fit=crop&q=80"
+        ]);
+      }
     } catch (err) {
       console.error("Error loading dashboard data:", err);
     } finally {
@@ -226,6 +247,59 @@ export default function AdminPage() {
 
   const handleRemoveImage = (indexToRemove: number) => {
     setProdImages(prodImages.filter((_, idx) => idx !== indexToRemove));
+  };
+
+  // Upload hero banner image handler (compression at 1600px width)
+  const handleBannerUpload = async (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploadingBannerIdx(index);
+      const compressedBlob = await compressImage(file, 1600, 0.8);
+      const fileName = `banner-${index}-${Date.now()}.jpg`;
+      const filePath = `banners/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("products")
+        .upload(filePath, compressedBlob, {
+          contentType: "image/jpeg",
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage.from("products").getPublicUrl(filePath);
+      if (data?.publicUrl) {
+        const updated = [...heroBanners];
+        updated[index] = data.publicUrl;
+        setHeroBanners(updated);
+      }
+    } catch (err: any) {
+      console.error("Error uploading banner:", err);
+      alert(`ব্যানার আপলোড ব্যর্থ হয়েছে! \n\nভুলের বিবরণ: ${err.message}`);
+    } finally {
+      setUploadingBannerIdx(null);
+    }
+  };
+
+  const handleSaveBanners = async () => {
+    try {
+      setSavingBanners(true);
+      const { error } = await supabase
+        .from("settings")
+        .upsert({
+          key: "hero_banners",
+          value: heroBanners,
+        }, { onConflict: "key" });
+
+      if (error) throw error;
+      alert("হিরো ব্যানার সফলভাবে সংরক্ষণ করা হয়েছে!");
+    } catch (err: any) {
+      console.error("Error saving banners:", err);
+      alert(`ব্যানার সংরক্ষণ করতে সমস্যা হয়েছে! \n\nভুলের বিবরণ: ${err.message}`);
+    } finally {
+      setSavingBanners(false);
+    }
   };
 
   // Add or Edit Product Submit
@@ -487,6 +561,16 @@ export default function AdminPage() {
             }`}
           >
             📁 ক্যাটাগরি ম্যানেজার ({categories.length})
+          </button>
+          <button
+            onClick={() => setActiveTab("banners")}
+            className={`w-full text-left px-5 py-3 rounded-2xl font-bold text-sm transition-all ${
+              activeTab === "banners"
+                ? "bg-emerald-600 text-white shadow-md"
+                : "bg-white text-stone-700 hover:bg-stone-100 border border-stone-200/80"
+            }`}
+          >
+            🖼️ হিরো ব্যানার ম্যানেজার
           </button>
         </aside>
 
@@ -789,6 +873,62 @@ export default function AdminPage() {
                           ))}
                         </tbody>
                       </table>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* --- BANNERS TAB --- */}
+              {activeTab === "banners" && (
+                <div className="flex-1 flex flex-col">
+                  <div className="pb-6 border-b border-stone-100 mb-6">
+                    <h2 className="text-xl font-bold text-stone-900">হিরো ব্যানার ম্যানেজার (Hero Banner Manager)</h2>
+                    <p className="text-xs text-stone-500 mt-1">হোম পেজে স্লাইড হওয়ার জন্য ৩টি ব্যানার ছবি পরিচালনা করুন।</p>
+                  </div>
+
+                  <div className="space-y-6 max-w-3xl">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      {[0, 1, 2].map((idx) => {
+                        const hasImg = heroBanners[idx];
+                        return (
+                          <div key={idx} className="bg-stone-50 border border-stone-200 rounded-2xl p-4 flex flex-col gap-3">
+                            <span className="text-xs font-bold text-stone-500 uppercase tracking-wider">ব্যানার ছবি {idx + 1}</span>
+                            <div className="relative aspect-video rounded-xl overflow-hidden bg-stone-200 border border-stone-250 flex items-center justify-center text-xs text-stone-400">
+                              {hasImg ? (
+                                <Image
+                                  src={heroBanners[idx]}
+                                  alt={`Banner ${idx + 1}`}
+                                  fill
+                                  className="object-cover"
+                                />
+                              ) : (
+                                "কোনো ছবি নেই"
+                              )}
+                            </div>
+                            
+                            <label className="bg-white border border-stone-200 hover:bg-stone-50 text-stone-700 font-bold px-3 py-2 rounded-xl text-center text-xs cursor-pointer block transition-colors">
+                              {uploadingBannerIdx === idx ? "আপলোড হচ্ছে..." : "নতুন ছবি আপলোড"}
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                disabled={uploadingBannerIdx !== null}
+                                onChange={(e) => handleBannerUpload(e, idx)}
+                              />
+                            </label>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    <div className="pt-6 border-t border-stone-150 flex justify-end">
+                      <button
+                        onClick={handleSaveBanners}
+                        disabled={savingBanners}
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md text-sm"
+                      >
+                        {savingBanners ? "সংরক্ষণ হচ্ছে..." : "ব্যানারসমূহ সংরক্ষণ করুন"}
+                      </button>
                     </div>
                   </div>
                 </div>

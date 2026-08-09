@@ -34,6 +34,13 @@ export default function Home() {
   const [showSplash, setShowSplash] = useState(true);
   const [animateOut, setAnimateOut] = useState(false);
 
+  const [banners, setBanners] = useState<string[]>([
+    "https://images.unsplash.com/photo-1463936575829-25148e1db1b8?w=800&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=800&auto=format&fit=crop&q=80"
+  ]);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
   const [descExpanded, setDescExpanded] = useState(false);
   const [careExpanded, setCareExpanded] = useState(false);
 
@@ -41,6 +48,15 @@ export default function Home() {
     setDescExpanded(false);
     setCareExpanded(false);
   }, [selectedProduct]);
+
+  // Auto-slide hero banner images
+  useEffect(() => {
+    if (banners.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % banners.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [banners]);
 
   useEffect(() => {
     // Start exit animation after 1800ms
@@ -114,6 +130,16 @@ export default function Home() {
         if (prodError) throw prodError;
         setProducts(prodData || []);
         setFilteredProducts(prodData || []);
+
+        // Fetch Banners from Settings
+        const { data: settingsData } = await supabase
+          .from("settings")
+          .select("*")
+          .eq("key", "hero_banners")
+          .single();
+        if (settingsData?.value && Array.isArray(settingsData.value)) {
+          setBanners(settingsData.value);
+        }
       } catch (err) {
         console.error("Error fetching data from Supabase:", err);
       } finally {
@@ -345,16 +371,25 @@ export default function Home() {
             </div>
 
             <div className="lg:col-span-5 relative">
-              <div className="relative w-full h-[350px] sm:h-[400px] rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
-                <Image
-                  src="https://images.unsplash.com/photo-1463936575829-25148e1db1b8?w=800&auto=format&fit=crop&q=80"
-                  alt="Green Heaven Nursery"
-                  fill
-                  priority
-                  className="object-cover"
-                />
+              <div className="relative w-full h-[350px] sm:h-[400px] rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-stone-100">
+                {banners.map((imgUrl, idx) => (
+                  <div
+                    key={idx}
+                    className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                      idx === currentSlide ? "opacity-100" : "opacity-0 pointer-events-none"
+                    }`}
+                  >
+                    <Image
+                      src={imgUrl}
+                      alt={`গ্রিন হেভেন ব্যানার ${idx + 1}`}
+                      fill
+                      priority={idx === 0}
+                      className="object-cover"
+                    />
+                  </div>
+                ))}
               </div>
-              <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-2xl shadow-xl flex items-center gap-3 border border-stone-100">
+              <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-2xl shadow-xl flex items-center gap-3 border border-stone-100 z-10">
                 <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center text-2xl">
                   🚚
                 </div>
