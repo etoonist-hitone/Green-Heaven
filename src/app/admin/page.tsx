@@ -501,26 +501,26 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-stone-50 flex flex-col font-sans">
       {/* Header */}
-      <header className="bg-white border-b border-stone-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">🔐</span>
-            <div>
-              <h1 className="text-xl font-bold text-stone-850">গ্রিন হেভেন অ্যাডমিন ড্যাশবোর্ড</h1>
-              <span className="text-xs text-stone-500">লগইন অ্যাকাউন্ট: {user.email}</span>
+      <header className="bg-white border-b border-stone-200 sticky top-0 z-40 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-0 sm:h-20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <span className="text-xl sm:text-2xl shrink-0">🔐</span>
+            <div className="min-w-0">
+              <h1 className="text-base sm:text-xl font-bold text-stone-850 truncate">গ্রিন হেভেন অ্যাডমিন ড্যাশবোর্ড</h1>
+              <span className="text-[10px] sm:text-xs text-stone-500 block truncate">লগইন অ্যাকাউন্ট: {user.email}</span>
             </div>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-2 w-full sm:w-auto justify-end shrink-0">
             <a
               href="/"
               target="_blank"
-              className="bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold px-4 py-2 rounded-xl transition-colors text-sm"
+              className="flex-1 sm:flex-none text-center bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold px-3 sm:px-4 py-2 rounded-xl transition-colors text-xs sm:text-sm"
             >
               👁️ সাইট দেখুন
             </a>
             <button
               onClick={handleLogout}
-              className="bg-red-50 hover:bg-red-100 text-red-700 font-semibold px-4 py-2 rounded-xl transition-colors text-sm"
+              className="flex-1 sm:flex-none bg-red-50 hover:bg-red-100 text-red-700 font-semibold px-3 sm:px-4 py-2 rounded-xl transition-colors text-xs sm:text-sm"
             >
               লগআউট
             </button>
