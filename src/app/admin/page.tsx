@@ -33,7 +33,7 @@ interface Inquiry {
   product?: Product;
 }
 
-type TabType = "products" | "inquiries" | "categories";
+type TabType = "products" | "inquiries" | "categories" | "banners";
 
 export default function AdminPage() {
   const [user, setUser] = useState<any>(null);
