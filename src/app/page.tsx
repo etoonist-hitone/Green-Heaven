@@ -643,7 +643,7 @@ export default function Home() {
           <div>
             <h4 className="text-lg font-bold text-white mb-4">🌿 গ্রিন হেভেন</h4>
             <p className="text-stone-400 text-sm leading-relaxed">
-              আপনার চারপাশের পরিবেশকে সবুজে সাজাতে আমরা নিয়ে এসেছি সেরা মানের ইনডোর ওアウトডোর প্ল্যান্ট।
+              আপনার চারপাশের পরিবেশকে সবুজে সাজাতে আমরা নিয়ে এসেছি সেরা মানের ইনডোর ও আউটডোর প্ল্যান্ট।
             </p>
           </div>
           <div>
