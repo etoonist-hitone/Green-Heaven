@@ -30,6 +30,7 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [activeImageIdx, setActiveImageIdx] = useState(0);
 
   const [showSplash, setShowSplash] = useState(true);
   const [animateOut, setAnimateOut] = useState(false);
@@ -47,6 +48,7 @@ export default function Home() {
   useEffect(() => {
     setDescExpanded(false);
     setCareExpanded(false);
+    setActiveImageIdx(0);
   }, [selectedProduct]);
 
   // Auto-slide hero banner images
@@ -500,13 +502,35 @@ export default function Home() {
             </div>
             
             <div className="p-6 overflow-y-auto space-y-6 flex-1">
-              <div className="relative h-[300px] sm:h-[400px] rounded-2xl overflow-hidden bg-stone-100/50">
-                <Image
-                  src={selectedProduct.images[0]}
-                  alt={selectedProduct.name_bn}
-                  fill
-                  className="object-contain"
-                />
+              <div className="space-y-3">
+                <div className="relative h-[300px] sm:h-[400px] rounded-2xl overflow-hidden bg-stone-100/50">
+                  <Image
+                    src={selectedProduct.images[activeImageIdx] || "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&auto=format&fit=crop&q=80"}
+                    alt={selectedProduct.name_bn}
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+                {selectedProduct.images && selectedProduct.images.length > 1 && (
+                  <div className="flex gap-2 overflow-x-auto pb-1 justify-center">
+                    {selectedProduct.images.map((imgUrl, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setActiveImageIdx(idx)}
+                        className={`relative w-14 h-14 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 ${
+                          idx === activeImageIdx ? "border-emerald-600 scale-105" : "border-transparent opacity-60 hover:opacity-100"
+                        }`}
+                      >
+                        <Image
+                          src={imgUrl}
+                          alt={`${selectedProduct.name_bn} thumbnail ${idx + 1}`}
+                          fill
+                          className="object-cover"
+                        />
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Action Bar: Price, Order, WhatsApp */}
